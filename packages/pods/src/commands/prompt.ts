@@ -20,7 +20,7 @@ export async function promptModel(modelName: string, userArgs: string[], opts: P
 	const activePod = opts.pod ? { name: opts.pod, pod: loadConfig().pods[opts.pod] } : getActivePod();
 
 	if (!activePod) {
-		console.error(chalk.red("No active pod. Use 'pi pods active <name>' to set one."));
+		console.error(chalk.red("No active pod. Use 'mypi pods active <name>' to set one."));
 		process.exit(1);
 	}
 

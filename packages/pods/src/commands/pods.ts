@@ -16,7 +16,7 @@ export const listPods = () => {
 	const podNames = Object.keys(config.pods);
 
 	if (podNames.length === 0) {
-		console.log("No pods configured. Use 'pi pods setup' to add a pod.");
+		console.log("No pods configured. Use 'mypi pods setup' to add a pod.");
 		return;
 	}
 
@@ -168,7 +168,7 @@ export const setupPod = async (
 	console.log(chalk.green(`✓ Pod '${name}' setup complete and set as active pod`));
 	console.log("");
 	console.log("You can now deploy models with:");
-	console.log(chalk.cyan(`  pi start <model> --name <name>`));
+	console.log(chalk.cyan(`  mypi start <model> --name <name>`));
 };
 
 /**

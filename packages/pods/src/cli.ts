@@ -16,31 +16,31 @@ const __dirname = dirname(__filename);
 const packageJson = JSON.parse(readFileSync(join(__dirname, "../package.json"), "utf-8"));
 
 function printHelp() {
-	console.log(`pi v${packageJson.version} - Manage vLLM deployments on GPU pods
+	console.log(`mypi v${packageJson.version} - Manage vLLM deployments on GPU pods
 
 Pod Management:
-  pi pods setup <name> "<ssh>" --mount "<mount>"    Setup pod with mount command
+  mypi pods setup <name> "<ssh>" --mount "<mount>"    Setup pod with mount command
     Options:
       --vllm release    Install latest vLLM release >=0.10.0 (default)
       --vllm nightly    Install vLLM nightly build (latest features)
       --vllm gpt-oss    Install vLLM 0.10.1+gptoss with PyTorch nightly (GPT-OSS only)
-  pi pods                                           List all pods (* = active)
-  pi pods active <name>                             Switch active pod
-  pi pods remove <name>                             Remove pod from local config
-  pi shell [<name>]                                 Open shell on pod (active or specified)
-  pi ssh [<name>] "<command>"                       Run SSH command on pod
+  mypi pods                                           List all pods (* = active)
+  mypi pods active <name>                             Switch active pod
+  mypi pods remove <name>                             Remove pod from local config
+  mypi shell [<name>]                                 Open shell on pod (active or specified)
+  mypi ssh [<name>] "<command>"                       Run SSH command on pod
 
 Model Management:
-  pi start <model> --name <name> [options]          Start a model
+  mypi start <model> --name <name> [options]          Start a model
     --memory <percent>   GPU memory allocation (30%, 50%, 90%)
     --context <size>     Context window (4k, 8k, 16k, 32k, 64k, 128k)
     --gpus <count>       Number of GPUs to use (predefined models only)
     --vllm <args...>     Pass remaining args to vLLM (ignores other options)
-  pi stop [<name>]                                  Stop model (or all if no name)
-  pi list                                           List running models
-  pi logs <name>                                    Stream model logs
-  pi agent <name> ["<message>"...] [options]        Chat with model using agent & tools
-  pi agent <name> [options]                         Interactive chat mode
+  mypi stop [<name>]                                  Stop model (or all if no name)
+  mypi list                                           List running models
+  mypi logs <name>                                    Stream model logs
+  mypi agent <name> ["<message>"...] [options]        Chat with model using agent & tools
+  mypi agent <name> [options]                         Interactive chat mode
     --continue, -c       Continue previous session
     --json              Output as JSONL
     (All pi-agent options are supported)
@@ -83,7 +83,7 @@ try {
 
 			if (!name || !sshCmd) {
 				console.error(
-					'Usage: pi pods setup <name> "<ssh>" [--mount "<mount>"] [--models-path <path>] [--vllm release|nightly|gpt-oss]',
+					'Usage: mypi pods setup <name> "<ssh>" [--mount "<mount>"] [--models-path <path>] [--vllm release|nightly|gpt-oss]',
 				);
 				process.exit(1);
 			}
@@ -125,7 +125,7 @@ try {
 			// pi pods active <name>
 			const name = args[2];
 			if (!name) {
-				console.error("Usage: pi pods active <name>");
+				console.error("Usage: mypi pods active <name>");
 				process.exit(1);
 			}
 			switchActivePod(name);
@@ -133,7 +133,7 @@ try {
 			// pi pods remove <name>
 			const name = args[2];
 			if (!name) {
-				console.error("Usage: pi pods remove <name>");
+				console.error("Usage: mypi pods remove <name>");
 				process.exit(1);
 			}
 			removePodCommand(name);
@@ -172,7 +172,7 @@ try {
 					if (podName) {
 						console.error(chalk.red(`Pod '${podName}' not found`));
 					} else {
-						console.error(chalk.red("No active pod. Use 'pi pods active <name>' to set one."));
+						console.error(chalk.red("No active pod. Use 'mypi pods active <name>' to set one."));
 					}
 					process.exit(1);
 				}
@@ -204,7 +204,7 @@ try {
 					podName = args[1];
 					sshCommand = args[2];
 				} else {
-					console.error('Usage: pi ssh [<name>] "<command>"');
+					console.error('Usage: mypi ssh [<name>] "<command>"');
 					process.exit(1);
 				}
 
@@ -224,7 +224,7 @@ try {
 					if (podName) {
 						console.error(chalk.red(`Pod '${podName}' not found`));
 					} else {
-						console.error(chalk.red("No active pod. Use 'pi pods active <name>' to set one."));
+						console.error(chalk.red("No active pod. Use 'mypi pods active <name>' to set one."));
 					}
 					process.exit(1);
 				}
@@ -321,7 +321,7 @@ try {
 				// pi logs <name>
 				const name = args[1];
 				if (!name) {
-					console.error("Usage: pi logs <name>");
+					console.error("Usage: mypi logs <name>");
 					process.exit(1);
 				}
 				await viewLogs(name, { pod: podOverride });
@@ -331,7 +331,7 @@ try {
 				// pi agent <name> [messages...] [options]
 				const name = args[1];
 				if (!name) {
-					console.error("Usage: pi agent <name> [messages...] [options]");
+					console.error("Usage: mypi agent <name> [messages...] [options]");
 					process.exit(1);
 				}
 

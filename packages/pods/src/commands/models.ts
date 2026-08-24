@@ -24,7 +24,7 @@ const getPod = (podOverride?: string): { name: string; pod: Pod } => {
 
 	const active = getActivePod();
 	if (!active) {
-		console.error(chalk.red("No active pod. Use 'pi pods active <name>' to set one."));
+		console.error(chalk.red("No active pod. Use 'mypi pods active <name>' to set one."));
 		process.exit(1);
 	}
 	return active;
@@ -360,7 +360,7 @@ WRAPPER
 			console.log("  • Try a smaller model variant");
 		}
 
-		console.log("\n" + chalk.cyan('Check full logs: pi ssh "tail -100 ~/.vllm_logs/' + name + '.log"'));
+		console.log("\n" + chalk.cyan('Check full logs: mypi ssh "tail -100 ~/.vllm_logs/' + name + '.log"'));
 		process.exit(1);
 	} else if (startupComplete) {
 		// Model started successfully - output connection details
@@ -395,20 +395,20 @@ WRAPPER
     -d '{"model":"${modelId}","messages":[{"role":"user","content":"Hi"}]}'`),
 		);
 		console.log("");
-		console.log(chalk.cyan(`Chat with model:  pi agent ${name} "Your message"`));
-		console.log(chalk.cyan(`Interactive mode: pi agent ${name} -i`));
-		console.log(chalk.cyan(`Monitor logs:     pi logs ${name}`));
-		console.log(chalk.cyan(`Stop model:       pi stop ${name}`));
+		console.log(chalk.cyan(`Chat with model:  mypi agent ${name} "Your message"`));
+		console.log(chalk.cyan(`Interactive mode: mypi agent ${name} -i`));
+		console.log(chalk.cyan(`Monitor logs:     mypi logs ${name}`));
+		console.log(chalk.cyan(`Stop model:       mypi stop ${name}`));
 	} else if (interrupted) {
 		console.log(chalk.yellow("\n\nStopped monitoring. Model deployment continues in background."));
-		console.log(chalk.cyan(`Chat with model: pi agent ${name} "Your message"`));
-		console.log(chalk.cyan(`Check status: pi logs ${name}`));
-		console.log(chalk.cyan(`Stop model: pi stop ${name}`));
+		console.log(chalk.cyan(`Chat with model: mypi agent ${name} "Your message"`));
+		console.log(chalk.cyan(`Check status: mypi logs ${name}`));
+		console.log(chalk.cyan(`Stop model: mypi stop ${name}`));
 	} else {
 		console.log(chalk.yellow("\n\nLog stream ended. Model may still be running."));
-		console.log(chalk.cyan(`Chat with model: pi agent ${name} "Your message"`));
-		console.log(chalk.cyan(`Check status: pi logs ${name}`));
-		console.log(chalk.cyan(`Stop model: pi stop ${name}`));
+		console.log(chalk.cyan(`Chat with model: mypi agent ${name} "Your message"`));
+		console.log(chalk.cyan(`Check status: mypi logs ${name}`));
+		console.log(chalk.cyan(`Stop model: mypi stop ${name}`));
 	}
 };
 
@@ -536,7 +536,7 @@ export const listModels = async (options: { pod?: string }) => {
 			console.log(chalk.red(`  ${name}: Process ${model.pid} is not running`));
 			anyDead = true;
 		} else if (status === "crashed") {
-			console.log(chalk.red(`  ${name}: vLLM crashed (check logs with 'pi logs ${name}')`));
+			console.log(chalk.red(`  ${name}: vLLM crashed (check logs with 'mypi logs ${name}')`));
 			anyDead = true;
 		} else if (status === "starting") {
 			console.log(chalk.yellow(`  ${name}: Still starting up...`));
@@ -546,7 +546,7 @@ export const listModels = async (options: { pod?: string }) => {
 	if (anyDead) {
 		console.log("");
 		console.log(chalk.yellow("Some models are not running. Clean up with:"));
-		console.log(chalk.cyan("  pi stop <name>"));
+		console.log(chalk.cyan("  mypi stop <name>"));
 	} else {
 		console.log(chalk.green("✓ All processes verified"));
 	}
@@ -611,10 +611,10 @@ export const showKnownModels = async () => {
 		console.log(chalk.bold(`Known Models for ${activePod.name} (${podGpuCount}x ${podGpuType || "GPU"}):\n`));
 	} else {
 		console.log(chalk.bold("Known Models:\n"));
-		console.log(chalk.yellow("No active pod. Use 'pi pods active <name>' to filter compatible models.\n"));
+		console.log(chalk.yellow("No active pod. Use 'mypi pods active <name>' to filter compatible models.\n"));
 	}
 
-	console.log("Usage: pi start <model> --name <name> [options]\n");
+	console.log("Usage: mypi start <model> --name <name> [options]\n");
 
 	// Group models by compatibility and family
 	const compatible: Record<string, Array<{ id: string; name: string; config: string; notes?: string }>> = {};
