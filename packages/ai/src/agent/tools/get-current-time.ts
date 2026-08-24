@@ -1,0 +1,41 @@
+import { z } from "zod";
+import type { AgentTool } from "../../agent";
+import type { AgentToolResult } from "../types";
+
+export interface GetCurrentTimeResult extends AgentToolResult<{ utcTimestamp: number }> {}
+
+export async function getCurrentTime(timezone?: string): Promise<GetCurrentTimeResult> {
+	const date = new Date();
+	if (timezone) {
+		try {
+			return {
+				output: date.toLocaleString("en-US", {
+					timeZone: timezone,
+					dateStyle: "full",
+					timeStyle: "long",
+				}),
+				details: { utcTimestamp: date.getTime() },
+			};
+		} catch (e) {
+			throw new Error(`Invalid timezone: ${timezone}. Current UTC time: ${date.toISOString()}`);
+		}
+	}
+	return {
+		output: date.toLocaleString("en-US", { dateStyle: "full", timeStyle: "long" }),
+		details: { utcTimestamp: date.getTime() },
+	};
+}
+
+const getCurrentTimeSchema = z.object({
+	timezone: z.string().optional().describe("Optional timezone (e.g., 'America/New_York', 'Europe/London')"),
+});
+
+export const getCurrentTimeTool: AgentTool<typeof getCurrentTimeSchema, { utcTimestamp: number }> = {
+	label: "Current Time",
+	name: "get_current_time",
+	description: "Get the current date and time",
+	parameters: getCurrentTimeSchema,
+	execute: async (_toolCallId, args) => {
+		return getCurrentTime(args.timezone);
+	},
+};
