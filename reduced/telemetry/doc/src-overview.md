@@ -8,9 +8,6 @@ implementations (`noop.ts`, `memory.ts`).
 flowchart TD
     I["index.ts<br/>TelemetryContext / TelemetrySpan contract<br/>schema types + createTypedSpanStarter"] --> N["noop.ts<br/>NOOP_TELEMETRY_CONTEXT"]
     I --> M["memory.ts<br/>InMemoryTelemetryContext"]
-    T["test/telemetry.test.ts"] --> I
-    T --> N
-    T --> M
 ```
 
 ## Layer 1: contract + typed schemas
@@ -54,16 +51,5 @@ flowchart TD
 - Recording methods are plain mutations: `addEvent` pushes, `setAttributes` merges (later defined values win), `setStatus` marks explicit status
 - `settleSpan` stamps `settled` and a deterministic `endSequence` (order of completion, no timestamps)
 - `getSpans()`: detached deep copies in span-start order — ids, parent ids, merged attributes, ordered events, final status
-
-</details>
-
-## Verification
-
-<details>
-<summary>test/telemetry.test.ts — 4 tests</summary>
-
-- schemas preserve serializable definitions; compile-time checks reject omitted required event attributes, off-enum values, undeclared events/attributes
-- two schemas combine into one typed starter vocabulary; child starters bind to their parent span (parent/child ids verified through the in-memory adapter); sync and async rejections preserve identity
-- noop admits callbacks synchronously, reuses one frozen inert span, preserves rejection values
 
 </details>

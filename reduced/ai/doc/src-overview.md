@@ -55,13 +55,3 @@ flowchart TD
 - Terminal semantics: queue exhausted or factory throw -> error event; aborted signal -> aborted terminal; `pending` stopReason -> "Faux response ended without a stop reason"
 
 </details>
-
-## Verification
-
-<details>
-<summary>2 test files, 19 tests</summary>
-
-- `event-stream.test.ts` (5, verbatim): drain order, post-completion push ignoring, waiter registration order, end with/without result
-- `faux.test.ts` (14, trimmed): registration + usage estimation, helper blocks, queue order/exhaustion, factory throw, pending rejection, token formula, per-session caching, exact event order for fixed-size chunks, multiple tool calls, error terminal, abort (pre-chunk + mid-text), unregister
-
-</details>
