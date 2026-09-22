@@ -6,13 +6,34 @@ segments, and typed values. `src/` has 16 files in four layers.
 
 ```mermaid
 flowchart TD
-    A["repo.ts<br/>SqliteSessionRepo<br/>create / open / list / delete / fork / close"] --> B["session.ts<br/>StorageBackedSession<br/>mutate / branch / append / read"]
-    A --> C["fork.ts<br/>createForkSnapshot"]
-    B --> D["mutation-line.ts<br/>serializes mutations"]
-    B --> E["storage.ts<br/>SqliteStorage<br/>commit / get / scan"]
-    E --> F["row layer<br/>session-row · entries · value-rows · branch-entries"]
-    F --> G["sql.ts · schema.ts<br/>parameterized queries · DDL"]
-    B & C & E --> H["types.ts · values.ts · commit.ts · context.ts<br/>contract: Entry, Write, Value, Session, Branch"]
+    subgraph L1["Layer 1: contract"]
+        H["types.ts · values.ts · commit.ts · context.ts · mutation-line.ts<br/>Entry, Write, Value, Session, Branch"]
+    end
+    subgraph L2["Layer 2: SQLite plumbing"]
+        G["sql.ts · schema.ts<br/>parameterized queries · DDL"]
+    end
+    subgraph L3["Layer 3: row layer"]
+        F["session-row · entries · value-rows · branch-entries"]
+    end
+    subgraph L4["Layer 4: storage, session, fork, repo"]
+        E["storage.ts<br/>SqliteStorage<br/>commit / get / scan"]
+        B["session.ts<br/>StorageBackedSession<br/>mutate / branch / append / read"]
+        C["fork.ts<br/>createForkSnapshot"]
+        A["repo.ts<br/>SqliteSessionRepo<br/>create / open / list / delete / fork / close"]
+    end
+
+    H --> G
+    H --> F
+    G --> F
+    H --> E
+    H --> B
+    G --> E
+    F --> E
+    E --> B
+    H --> C
+    C --> A
+    B --> A
+    E --> A
 ```
 
 ## Layer 1: contract (ported from `@earendil-works/pi-agent-core`)

@@ -49,6 +49,7 @@ export type {
 	ServiceInstanceAddress,
 	ServiceInstanceSnapshot,
 	ServiceMemberSnapshot,
+	ServiceProviderUpdate,
 	ServiceMode,
 	ServiceSpawner,
 	ServiceSubscription,

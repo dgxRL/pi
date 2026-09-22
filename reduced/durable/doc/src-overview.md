@@ -6,8 +6,15 @@ reference backend (`memory-storage.ts`).
 
 ```mermaid
 flowchart TD
-    T["types.ts<br/>ConversationRecord · EntryRecord ·<br/>Input · TaskRecord · Storage interface"] --> MS["memory-storage.ts<br/>MemoryStorage: atomic commits,<br/>detached values, fork-aware scans"]
-    T --> I["index.ts<br/>barrel"]
+    subgraph L1["Layer 1: the record model and storage contract"]
+        T["types.ts<br/>ConversationRecord · EntryRecord ·<br/>Input · TaskRecord · Storage interface"]
+    end
+    subgraph L2["Layer 2: the reference backend"]
+        MS["memory-storage.ts<br/>MemoryStorage: atomic commits,<br/>detached values, fork-aware scans"]
+    end
+    I["index.ts<br/>barrel"]
+
+    T --> MS
     MS --> I
 ```
 

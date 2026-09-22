@@ -6,10 +6,22 @@ codec that binds them.
 
 ```mermaid
 flowchart TD
-    P["protocol.ts<br/>PROTOCOL_VERSION · hello fencing<br/>request/cancel/response/service_update envelopes"] --> C["codec.ts<br/>encodeClientMessage / encodeServerMessage<br/>ClientMessageDecoder / ServerMessageDecoder"]
-    J["json.ts<br/>JsonValue · isJsonValue"] --> C
-    CB["cbor/<br/>strict RFC 8949 subset:<br/>encodeCbor / decodeCbor"] --> C
-    F["framing.ts<br/>4-byte length prefix · FrameDecoder"] --> C
+    subgraph L1["Layer 1: message envelopes"]
+        P["protocol.ts<br/>PROTOCOL_VERSION · hello fencing<br/>request/cancel/response/service_update envelopes"]
+    end
+    subgraph L2["Layer 2: the byte pipeline"]
+        CB["cbor/<br/>strict RFC 8949 subset:<br/>encodeCbor / decodeCbor"]
+        F["framing.ts<br/>4-byte length prefix · FrameDecoder"]
+    end
+    subgraph L3["Layer 3: the validated codec"]
+        J["json.ts<br/>JsonValue · isJsonValue"]
+        C["codec.ts<br/>encodeClientMessage / encodeServerMessage<br/>ClientMessageDecoder / ServerMessageDecoder"]
+    end
+
+    P --> C
+    CB --> C
+    F --> C
+    J --> C
 ```
 
 ## Layer 1: message envelopes

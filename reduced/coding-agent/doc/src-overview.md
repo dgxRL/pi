@@ -7,16 +7,36 @@ faux provider from `reduced/ai` via relative paths — the real layering.
 
 ```mermaid
 flowchart TD
-    ARGS["args.ts · config.ts · settings.ts · defaults.ts"] --> IDX["index.ts<br/>main(argv): parse -> settings -> session -> print"]
-    IDX --> SDK["core/sdk.ts<br/>createAgentSession"]
-    SDK --> TOOLS["core/tools/<br/>read · bash · edit · write · grep · find · ls"]
-    SDK --> SM["core/session-manager.ts<br/>JSONL tree · deferred flush · context replay"]
-    SDK --> SESS["core/agent-session.ts<br/>prompt pipeline · persistence ·<br/>tool loadout · events"]
+    subgraph L1["Layer 1: entry and mode"]
+        ARGS["args.ts · config.ts · settings.ts · defaults.ts"]
+        IDX["index.ts<br/>main(argv): parse -> settings -> session -> print"]
+        PM["modes/print-mode.ts + json-event.ts"]
+    end
+    subgraph L2["Layer 2: session orchestration"]
+        SESS["core/agent-session.ts<br/>prompt pipeline · persistence ·<br/>tool loadout · events"]
+        SP["core/messages.ts + system-prompt.ts<br/>convertToLlm · sections diff"]
+    end
+    subgraph L3["Layer 3: persistence"]
+        SM["core/session-manager.ts<br/>JSONL tree · deferred flush · context replay"]
+    end
+    subgraph L4["Layer 4: the coding tools"]
+        TOOLS["core/tools/<br/>read · bash · edit · write · grep · find · ls"]
+    end
+    subgraph L5["Layer 5: composition"]
+        SDK["core/sdk.ts<br/>createAgentSession"]
+    end
+    AG["reduced/agent<br/>Agent + agent loop"]
+
+    ARGS --> IDX
+    IDX --> SDK
+    PM --> SESS
+    SDK --> SESS
+    SDK --> SM
+    SDK --> TOOLS
     SESS --> SM
-    SESS --> SP["core/messages.ts + system-prompt.ts<br/>convertToLlm · sections diff"]
-    SESS --> AG["reduced/agent<br/>Agent + agent loop"]
+    SESS --> SP
+    SESS --> AG
     TOOLS --> AG
-    PM["modes/print-mode.ts + json-event.ts"] --> SESS
 ```
 
 ## Layer 1: entry and mode

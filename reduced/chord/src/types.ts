@@ -19,7 +19,7 @@ export interface Context {
 	toString(): string;
 }
 
-export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
+export type JsonValue = null | boolean | number | string | readonly JsonValue[] | { readonly [key: string]: JsonValue };
 
 export interface ReplicatedStateDelivery {
 	readonly kind: "hydrate" | "update";

@@ -6,17 +6,37 @@ transport), and the facet host that composes them.
 
 ```mermaid
 flowchart TD
-    CTX["context.ts<br/>Context / ContextKey<br/>cancellation layering"] --> T["types.ts<br/>Service / ReplicatedState<br/>transport + facet contracts"]
-    D["delta.ts<br/>Op vocabulary · track() · apply"] --> ST["services/state.ts<br/>replicated state producer + replica"]
-    T --> P["services/provider.ts<br/>serves calls + subscriptions"]
-    T --> C["services/consumer.ts<br/>RemoteServiceBinding over a transport"]
+    subgraph L1["Layer 1: foundation"]
+        CTX["context.ts<br/>Context / ContextKey<br/>cancellation layering"]
+        D["delta.ts<br/>Op vocabulary · track() · apply"]
+        T["types.ts<br/>Service / ReplicatedState<br/>transport + facet contracts"]
+    end
+    subgraph L2["Layer 2: the service runtime"]
+        ST["services/state.ts<br/>replicated state producer + replica"]
+        P["services/provider.ts<br/>serves calls + subscriptions"]
+        C["services/consumer.ts<br/>RemoteServiceBinding over a transport"]
+        LB["services/loopback.ts<br/>in-process transport"]
+    end
+    subgraph L3["Layer 3: the facet host"]
+        F["facets.ts<br/>FacetKernel: staging, activation,<br/>environment, reload, dispose"]
+        A["api.ts<br/>createFacetHost / defineService /<br/>replicatedState / createRemoteServiceBinding"]
+    end
+    I["index.ts<br/>barrel"]
+
+    CTX --> ST
+    D --> ST
+    T --> P
+    T --> C
     ST --> P
-    LB["services/loopback.ts<br/>in-process transport"] --> C
-    F["facets.ts<br/>FacetKernel: staging, activation,<br/>environment, reload, dispose"] --> P
-    F --> ST
-    A["api.ts<br/>createFacetHost / defineService /<br/>replicatedState / createRemoteServiceBinding"] --> F
+    LB --> C
+    CTX --> F
+    T --> F
+    ST --> F
+    P --> F
+    A --> F
     A --> C
-    I["index.ts<br/>barrel"] --> A
+    F --> I
+    A --> I
 ```
 
 ## Layer 1: foundation

@@ -6,8 +6,16 @@ implementations (`noop.ts`, `memory.ts`).
 
 ```mermaid
 flowchart TD
-    I["index.ts<br/>TelemetryContext / TelemetrySpan contract<br/>schema types + createTypedSpanStarter"] --> N["noop.ts<br/>NOOP_TELEMETRY_CONTEXT"]
-    I --> M["memory.ts<br/>InMemoryTelemetryContext"]
+    subgraph L1["Layer 1: contract + typed schemas"]
+        I["index.ts<br/>TelemetryContext / TelemetrySpan contract<br/>schema types + createTypedSpanStarter"]
+    end
+    subgraph L2["Layer 2: adapters"]
+        N["noop.ts<br/>NOOP_TELEMETRY_CONTEXT"]
+        M["memory.ts<br/>InMemoryTelemetryContext"]
+    end
+
+    I --> N
+    I --> M
 ```
 
 ## Layer 1: contract + typed schemas

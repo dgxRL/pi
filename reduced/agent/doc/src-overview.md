@@ -5,14 +5,28 @@ path). Three layers: the contract, the loop, and the stateful wrapper.
 
 ```mermaid
 flowchart TD
-    T["types.ts<br/>AgentMessage / AgentTool / AgentEvent<br/>AgentLoopConfig / StreamFn"] --> L["agent-loop.ts<br/>runLoop: stream -> tools -> repeat"]
-    T --> LB["llm-boundary.ts<br/>transcript replay · tool declarations<br/>argument validation"]
-    L --> LB
-    L --> ES["event-stream.ts<br/>EventStream + AssistantMessageEventStream"]
-    A["agent.ts<br/>Agent: state · subscribe · prompt ·<br/>steer/followUp queues · abort"] --> L
-    A --> LB
-    SF["stream-fn.ts<br/>setDefaultStreamFn"] --> A
-    I["index.ts<br/>barrel"] --> A
+    subgraph L1["Layer 1: contract"]
+        T["types.ts<br/>AgentMessage / AgentTool / AgentEvent<br/>AgentLoopConfig / StreamFn"]
+        ES["event-stream.ts<br/>EventStream + AssistantMessageEventStream"]
+    end
+    subgraph L2["Layer 2: the loop"]
+        LB["llm-boundary.ts<br/>transcript replay · tool declarations<br/>argument validation"]
+        AL["agent-loop.ts<br/>runLoop: stream -> tools -> repeat"]
+    end
+    subgraph L3["Layer 3: the wrapper"]
+        SF["stream-fn.ts<br/>setDefaultStreamFn"]
+        A["agent.ts<br/>Agent: state · subscribe · prompt ·<br/>steer/followUp queues · abort"]
+    end
+    I["index.ts<br/>barrel"]
+
+    T --> AL
+    T --> LB
+    ES --> AL
+    LB --> AL
+    T --> A
+    AL --> A
+    SF --> A
+    A --> I
 ```
 
 ## Layer 1: contract

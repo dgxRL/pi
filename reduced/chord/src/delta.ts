@@ -73,7 +73,7 @@ const isObj = (value: unknown): value is object => value !== null && typeof valu
  */
 const deepCopy = <T extends JsonValue>(value: T): T => {
 	if (!isObj(value)) return value;
-	if (Array.isArray(value)) return value.map((item) => deepCopy(item)) as T;
+	if (Array.isArray(value)) return value.map((item) => deepCopy(item)) as unknown as T;
 	const result = {} as Record<string, JsonValue>;
 	for (const key of Object.keys(value)) {
 		result[key] = deepCopy((value as Record<string, JsonValue>)[key]!);

@@ -6,13 +6,23 @@ the streaming contract. No wire protocol, no HTTP.
 
 ```mermaid
 flowchart TD
-    T["types.ts<br/>Message / Tool / Usage / Model<br/>AssistantMessageEvent union / StreamFunction"] --> ES["event-stream.ts<br/>EventStream + AssistantMessageEventStream"]
-    T --> REG["registry.ts<br/>provider map + stream / complete"]
-    FX["faux.ts<br/>scripted streaming provider"] --> ES
+    subgraph L1["Layer 1: contract and event spine"]
+        T["types.ts<br/>Message / Tool / Usage / Model<br/>AssistantMessageEvent union / StreamFunction"]
+        ES["event-stream.ts<br/>EventStream + AssistantMessageEventStream"]
+        JP["json-parse.ts<br/>parseStreamingJson"]
+    end
+    subgraph L2["Layer 2: the provider"]
+        REG["registry.ts<br/>provider map + stream / complete"]
+        FX["faux.ts<br/>scripted streaming provider"]
+    end
+    IDX["index.ts<br/>barrel"]
+
+    T --> REG
+    T --> FX
+    ES --> FX
     FX --> REG
-    FX --> JP["json-parse.ts<br/>parseStreamingJson"]
-    IDX["index.ts<br/>barrel"] --> T
-    IDX --> FX
+    REG --> IDX
+    FX --> IDX
 ```
 
 ## Layer 1: contract and event spine
